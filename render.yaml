@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: customer-sales-analytics-api
+    runtime: python
+    plan: free
+    buildCommand: python -m pip install uv && uv sync --frozen
+    startCommand: uv run uvicorn api.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: APP_API_HOST
+        value: 0.0.0.0
+      - key: APP_LOG_LEVEL
+        value: INFO
+      - key: APP_CORS_ALLOW_ORIGINS
+        value: '["*"]'
+      - key: APP_PIPELINE_TIMEOUT_SECONDS
+        value: "3600"
+      - key: PYTHON_VERSION
+        value: "3.14.0"
+
+  - type: web
+    name: customer-sales-analytics-dashboard
+    runtime: python
+    plan: free
+    buildCommand: python -m pip install uv && uv sync --frozen
+    startCommand: >-
+      uv run streamlit run streamlit_app/app.py
+      --server.address 0.0.0.0
+      --server.port $PORT
+    envVars:
+      - key: STREAMLIT_SERVER_HEADLESS
+        value: "true"
+      - key: STREAMLIT_SERVER_FILE_WATCHER_TYPE
+        value: none
+      - key: PYTHON_VERSION
+        value: "3.14.0"
