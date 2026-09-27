@@ -20,9 +20,19 @@ logs/
 # Environment files
 .env
 
-# Generated data and experiment outputs
+# Raw/generated data stays out of Git because it can be large.
 data/
-models/
+
+# Keep the promoted inference bundle in Git for API deployment.
+# Candidate models remain ignored; only the production bundle is versioned.
+models/*
+!models/segmentation/
+models/segmentation/*
+!models/segmentation/best_model/
+!models/segmentation/best_model/**
+
+# Reports and artifacts are intentionally not ignored because the API and
+# dashboard read the generated deployment reports from this directory.
 
 # Source package named data is code, not generated data
 !src/customer_sales_analytics/data/
