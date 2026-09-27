@@ -1,0 +1,52 @@
+{
+  "seed": 42,
+  "train_fraction": 0.7,
+  "validation_fraction": 0.15,
+  "test_fraction": 0.15,
+  "customer_segmentation": {
+    "train": {
+      "rows": 48809,
+      "columns": 12,
+      "output_path": "data\\splits\\customer_segmentation\\train\\train.csv"
+    },
+    "validation": {
+      "rows": 10459,
+      "columns": 12,
+      "output_path": "data\\splits\\customer_segmentation\\validation\\validation.csv"
+    },
+    "test": {
+      "rows": 10460,
+      "columns": 12,
+      "output_path": "data\\splits\\customer_segmentation\\test\\test.csv"
+    }
+  },
+  "sales_analysis": {
+    "train": {
+      "rows": 255,
+      "columns": 16,
+      "output_path": "data\\splits\\sales_analysis\\train\\train.csv",
+      "date_range": {
+        "min": "2026-01-01",
+        "max": "2026-09-12"
+      }
+    },
+    "validation": {
+      "rows": 54,
+      "columns": 16,
+      "output_path": "data\\splits\\sales_analysis\\validation\\validation.csv",
+      "date_range": {
+        "min": "2026-09-13",
+        "max": "2026-11-05"
+      }
+    },
+    "test": {
+      "rows": 56,
+      "columns": 16,
+      "output_path": "data\\splits\\sales_analysis\\test\\test.csv",
+      "date_range": {
+        "min": "2026-11-06",
+        "max": "2026-12-31"
+      }
+    }
+  }
+}

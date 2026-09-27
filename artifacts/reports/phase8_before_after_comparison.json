@@ -1,0 +1,34 @@
+{
+  "segmentation": {
+    "before": [
+      {"model_name": "baseline_kmeans_2", "silhouette_score": 0.1909924192, "davies_bouldin_score": 1.8426813860},
+      {"model_name": "kmeans_3", "silhouette_score": 0.1459227088, "davies_bouldin_score": 2.0699725815},
+      {"model_name": "kmeans_4", "silhouette_score": 0.1823036616, "davies_bouldin_score": 1.7012607748},
+      {"model_name": "kmeans_5", "silhouette_score": 0.1611579846, "davies_bouldin_score": 1.6830515166},
+      {"model_name": "kmeans_6", "silhouette_score": 0.1436709091, "davies_bouldin_score": 1.7271561166},
+      {"model_name": "kmeans_7", "silhouette_score": 0.1529862985, "davies_bouldin_score": 1.5250581679},
+      {"model_name": "gaussian_mixture_3", "silhouette_score": -0.0023223703, "davies_bouldin_score": 5.4483344205},
+      {"model_name": "gaussian_mixture_4", "silhouette_score": -0.0346756145, "davies_bouldin_score": 4.5332592769},
+      {"model_name": "gaussian_mixture_5", "silhouette_score": -0.0468541306, "davies_bouldin_score": 4.7457051441},
+      {"model_name": "gaussian_mixture_6", "silhouette_score": -0.0589402476, "davies_bouldin_score": 4.9587164153},
+      {"model_name": "gaussian_mixture_7", "silhouette_score": -0.0695887626, "davies_bouldin_score": 5.7057461425}
+    ],
+    "after": "artifacts/model_comparison/segmentation_comparison.csv",
+    "winner": "baseline_kmeans_2"
+  },
+  "sales": {
+    "before": [
+      {"model_name": "naive_last_value", "mae": 39749.1, "rmse": 66906.8123},
+      {"model_name": "linear_regression", "mae": 40705.4546, "rmse": 61125.9143},
+      {"model_name": "random_forest", "mae": 53760.1663, "rmse": 81574.4681}
+    ],
+    "after": [
+      {"model_name": "naive_last_value", "cv_mae": 43522.0443, "cv_rmse": 73069.1253, "mae": 39749.1, "rmse": 66906.8123},
+      {"model_name": "linear_regression", "cv_mae": 40142.3809, "cv_rmse": 65651.0861, "mae": 40705.4546, "rmse": 61125.9143},
+      {"model_name": "ridge", "cv_mae": 39983.7983, "cv_rmse": 65528.3654, "mae": 40603.7036, "rmse": 61060.1629},
+      {"model_name": "random_forest", "cv_mae": 49338.5248, "cv_rmse": 70110.3979, "mae": 50839.5918, "rmse": 73045.2367}
+    ],
+    "winner_by_validation_rmse": "ridge",
+    "winner_by_cross_validation_rmse": "ridge"
+  }
+}

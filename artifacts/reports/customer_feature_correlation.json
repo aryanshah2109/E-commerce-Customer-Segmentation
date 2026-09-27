@@ -1,0 +1,129 @@
+{
+  "columns": [
+    "recency_days",
+    "frequency",
+    "monetary_value",
+    "avg_order_value",
+    "order_value_std",
+    "product_diversity",
+    "purchase_velocity",
+    "return_rate",
+    "coupon_usage_rate"
+  ],
+  "correlation_threshold": 0.8,
+  "correlation_matrix": {
+    "recency_days": {
+      "recency_days": 1.0,
+      "frequency": -0.4335,
+      "monetary_value": -0.204483,
+      "avg_order_value": 0.005787,
+      "order_value_std": -0.174863,
+      "product_diversity": -0.433516,
+      "purchase_velocity": -0.254347,
+      "return_rate": 0.002193,
+      "coupon_usage_rate": 0.001456
+    },
+    "frequency": {
+      "recency_days": -0.4335,
+      "frequency": 1.0,
+      "monetary_value": 0.476108,
+      "avg_order_value": -0.008472,
+      "order_value_std": 0.295955,
+      "product_diversity": 0.999942,
+      "purchase_velocity": 0.040037,
+      "return_rate": 0.001487,
+      "coupon_usage_rate": -0.001433
+    },
+    "monetary_value": {
+      "recency_days": -0.204483,
+      "frequency": 0.476108,
+      "monetary_value": 1.0,
+      "avg_order_value": 0.746853,
+      "order_value_std": 0.816929,
+      "product_diversity": 0.476186,
+      "purchase_velocity": 0.019107,
+      "return_rate": 0.005441,
+      "coupon_usage_rate": -0.00375
+    },
+    "avg_order_value": {
+      "recency_days": 0.005787,
+      "frequency": -0.008472,
+      "monetary_value": 0.746853,
+      "avg_order_value": 1.0,
+      "order_value_std": 0.617048,
+      "product_diversity": -0.008395,
+      "purchase_velocity": 0.000103,
+      "return_rate": 0.011786,
+      "coupon_usage_rate": -0.004341
+    },
+    "order_value_std": {
+      "recency_days": -0.174863,
+      "frequency": 0.295955,
+      "monetary_value": 0.816929,
+      "avg_order_value": 0.617048,
+      "order_value_std": 1.0,
+      "product_diversity": 0.296005,
+      "purchase_velocity": -0.013284,
+      "return_rate": 0.001286,
+      "coupon_usage_rate": -0.004596
+    },
+    "product_diversity": {
+      "recency_days": -0.433516,
+      "frequency": 0.999942,
+      "monetary_value": 0.476186,
+      "avg_order_value": -0.008395,
+      "order_value_std": 0.296005,
+      "product_diversity": 1.0,
+      "purchase_velocity": 0.040039,
+      "return_rate": 0.001523,
+      "coupon_usage_rate": -0.001425
+    },
+    "purchase_velocity": {
+      "recency_days": -0.254347,
+      "frequency": 0.040037,
+      "monetary_value": 0.019107,
+      "avg_order_value": 0.000103,
+      "order_value_std": -0.013284,
+      "product_diversity": 0.040039,
+      "purchase_velocity": 1.0,
+      "return_rate": -0.000453,
+      "coupon_usage_rate": 0.003763
+    },
+    "return_rate": {
+      "recency_days": 0.002193,
+      "frequency": 0.001487,
+      "monetary_value": 0.005441,
+      "avg_order_value": 0.011786,
+      "order_value_std": 0.001286,
+      "product_diversity": 0.001523,
+      "purchase_velocity": -0.000453,
+      "return_rate": 1.0,
+      "coupon_usage_rate": 0.015535
+    },
+    "coupon_usage_rate": {
+      "recency_days": 0.001456,
+      "frequency": -0.001433,
+      "monetary_value": -0.00375,
+      "avg_order_value": -0.004341,
+      "order_value_std": -0.004596,
+      "product_diversity": -0.001425,
+      "purchase_velocity": 0.003763,
+      "return_rate": 0.015535,
+      "coupon_usage_rate": 1.0
+    }
+  },
+  "flagged_pairs": [
+    {
+      "feature_1": "frequency",
+      "feature_2": "product_diversity",
+      "correlation": 0.9999422511024185,
+      "absolute_correlation": 0.9999422511024185
+    },
+    {
+      "feature_1": "monetary_value",
+      "feature_2": "order_value_std",
+      "correlation": 0.8169290169360722,
+      "absolute_correlation": 0.8169290169360722
+    }
+  ]
+}

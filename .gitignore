@@ -22,7 +22,6 @@ logs/
 
 # Generated data and experiment outputs
 data/
-artifacts/
 models/
 
 # Source package named data is code, not generated data

@@ -1,0 +1,48 @@
+{
+  "n_components": 2,
+  "feature_names": [
+    "recency_days",
+    "frequency",
+    "order_value_std",
+    "product_diversity",
+    "purchase_velocity",
+    "return_rate",
+    "coupon_usage_rate",
+    "monetary_value",
+    "avg_order_value"
+  ],
+  "components": [
+    {
+      "component": 1,
+      "loadings": {
+        "recency_days": -0.2710974062982783,
+        "frequency": 0.43540486255961863,
+        "order_value_std": 0.38238627580673795,
+        "product_diversity": 0.4354315591026985,
+        "purchase_velocity": 0.04064707931881311,
+        "return_rate": 0.0015320446920001007,
+        "coupon_usage_rate": -0.004512148337083375,
+        "monetary_value": 0.5010260276637661,
+        "avg_order_value": 0.3852361915404571
+      }
+    },
+    {
+      "component": 2,
+      "loadings": {
+        "recency_days": 0.3917564312781317,
+        "frequency": -0.4032037888597186,
+        "order_value_std": 0.36683471555329306,
+        "product_diversity": -0.40315531861136317,
+        "purchase_velocity": -0.24894433302345442,
+        "return_rate": 0.003845974808642456,
+        "coupon_usage_rate": -0.012843165232358096,
+        "monetary_value": 0.26494736738969765,
+        "avg_order_value": 0.5044814732921881
+      }
+    }
+  ],
+  "explained_variance_ratio": [
+    0.372306909906223,
+    0.1737556674586636
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "model": "PCA-2 + KMeans-2",
+  "training_rows": 69728,
+  "feature_count": 12,
+  "random_seed": 42,
+  "metrics": {
+    "silhouette_score": 0.3875960162004727,
+    "davies_bouldin_score": 0.975780406720684
+  },
+  "cluster_sizes": {
+    "0": 35311,
+    "1": 34417
+  },
+  "model_path": "models\\segmentation\\candidates\\selected_segmentation_bundle.joblib",
+  "cluster_profile_path": "artifacts\\reports\\segmentation_cluster_profile.csv"
+}

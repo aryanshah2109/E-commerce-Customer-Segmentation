@@ -1,0 +1,1068 @@
+{
+  "overview": {
+    "shape": [
+      200000,
+      50
+    ],
+    "dtypes": {
+      "Order_ID": "str",
+      "Order_Date": "datetime64[us]",
+      "Order_Time": "str",
+      "Customer_ID": "str",
+      "Customer_Name": "str",
+      "Customer_Age": "int64",
+      "Customer_Gender": "str",
+      "Customer_Country": "str",
+      "Customer_Continent": "str",
+      "Customer_City": "str",
+      "Customer_Region": "str",
+      "Customer_Segment": "str",
+      "Product_ID": "str",
+      "SKU": "str",
+      "Product_Name": "str",
+      "Product_Category": "str",
+      "Product_Subcategory": "str",
+      "Brand": "str",
+      "Quantity": "int64",
+      "Unit_Price_USD": "float64",
+      "Gross_Sales_USD": "float64",
+      "Discount_Percentage": "float64",
+      "Discount_Amount_USD": "float64",
+      "Net_Sales_USD": "float64",
+      "Tax_Rate_Percentage": "float64",
+      "Tax_USD": "float64",
+      "Shipping_Cost_USD": "float64",
+      "Total_Order_Value_USD": "float64",
+      "Payment_Method": "str",
+      "Payment_Status": "str",
+      "Order_Status": "str",
+      "Shipping_Method": "str",
+      "Delivery_Days": "int64",
+      "Return_Status": "str",
+      "Return_Reason": "str",
+      "Marketing_Channel": "str",
+      "Device_Type": "str",
+      "Coupon_Used": "bool",
+      "Coupon_Code": "str",
+      "Customer_Rating": "float64",
+      "Review_Sentiment": "str",
+      "Is_Repeat_Customer": "bool",
+      "Sales_Region": "str",
+      "Warehouse": "str",
+      "Supplier": "str",
+      "Order_Profit_USD": "float64",
+      "Profit_Margin_Percentage": "float64",
+      "Is_Bestseller_Product": "bool",
+      "Is_New_Customer": "bool",
+      "Is_First_Order": "bool"
+    },
+    "memory_bytes": 131581577,
+    "date_min": "2026-01-01T00:00:00",
+    "date_max": "2026-12-31T00:00:00",
+    "unique_counts": {
+      "Customer_ID": 69728,
+      "Order_ID": 200000,
+      "Product_ID": 10000
+    },
+    "duplicate_rows": 0,
+    "possible_leakage_columns": [
+      "Return_Status",
+      "Return_Reason",
+      "Customer_Rating",
+      "Review_Sentiment",
+      "Order_Profit_USD"
+    ],
+    "sanity_checks": [
+      "Gross_Sales_USD: no negative values found",
+      "Net_Sales_USD: no negative values found",
+      "Total_Order_Value_USD: no negative values found",
+      "Order_Date: 64517 future date(s) found"
+    ]
+  },
+  "dtypes": {
+    "Order_ID": "str",
+    "Order_Date": "datetime64[us]",
+    "Order_Time": "str",
+    "Customer_ID": "str",
+    "Customer_Name": "str",
+    "Customer_Age": "int64",
+    "Customer_Gender": "str",
+    "Customer_Country": "str",
+    "Customer_Continent": "str",
+    "Customer_City": "str",
+    "Customer_Region": "str",
+    "Customer_Segment": "str",
+    "Product_ID": "str",
+    "SKU": "str",
+    "Product_Name": "str",
+    "Product_Category": "str",
+    "Product_Subcategory": "str",
+    "Brand": "str",
+    "Quantity": "int64",
+    "Unit_Price_USD": "float64",
+    "Gross_Sales_USD": "float64",
+    "Discount_Percentage": "float64",
+    "Discount_Amount_USD": "float64",
+    "Net_Sales_USD": "float64",
+    "Tax_Rate_Percentage": "float64",
+    "Tax_USD": "float64",
+    "Shipping_Cost_USD": "float64",
+    "Total_Order_Value_USD": "float64",
+    "Payment_Method": "str",
+    "Payment_Status": "str",
+    "Order_Status": "str",
+    "Shipping_Method": "str",
+    "Delivery_Days": "int64",
+    "Return_Status": "str",
+    "Return_Reason": "str",
+    "Marketing_Channel": "str",
+    "Device_Type": "str",
+    "Coupon_Used": "bool",
+    "Coupon_Code": "str",
+    "Customer_Rating": "float64",
+    "Review_Sentiment": "str",
+    "Is_Repeat_Customer": "bool",
+    "Sales_Region": "str",
+    "Warehouse": "str",
+    "Supplier": "str",
+    "Order_Profit_USD": "float64",
+    "Profit_Margin_Percentage": "float64",
+    "Is_Bestseller_Product": "bool",
+    "Is_New_Customer": "bool",
+    "Is_First_Order": "bool"
+  },
+  "missing_values": [
+    {
+      "index": "Return_Reason",
+      "null_count": 191670,
+      "null_rate": 0.95835,
+      "is_flagged": true
+    },
+    {
+      "index": "Coupon_Code",
+      "null_count": 170165,
+      "null_rate": 0.850825,
+      "is_flagged": true
+    },
+    {
+      "index": "Order_Time",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Customer_ID",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Customer_Name",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Customer_Age",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Customer_Gender",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Customer_Country",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Customer_Continent",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Customer_City",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Customer_Region",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Customer_Segment",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Product_ID",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "SKU",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Product_Name",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Product_Category",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Order_ID",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Order_Date",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Brand",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Product_Subcategory",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Quantity",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Unit_Price_USD",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Discount_Amount_USD",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Net_Sales_USD",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Gross_Sales_USD",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Discount_Percentage",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Shipping_Cost_USD",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Total_Order_Value_USD",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Payment_Method",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Payment_Status",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Order_Status",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Shipping_Method",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Tax_Rate_Percentage",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Tax_USD",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Return_Status",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Delivery_Days",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Device_Type",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Marketing_Channel",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Coupon_Used",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Customer_Rating",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Review_Sentiment",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Is_Repeat_Customer",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Sales_Region",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Warehouse",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Supplier",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Order_Profit_USD",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Profit_Margin_Percentage",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Is_Bestseller_Product",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Is_New_Customer",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    },
+    {
+      "index": "Is_First_Order",
+      "null_count": 0,
+      "null_rate": 0.0,
+      "is_flagged": false
+    }
+  ],
+  "categorical": {
+    "Order_ID": {
+      "cardinality": 200000,
+      "top": {
+        "ORD-105927": 1,
+        "ORD-178205": 1,
+        "ORD-057651": 1,
+        "ORD-124661": 1,
+        "ORD-162453": 1,
+        "ORD-017387": 1,
+        "ORD-197776": 1,
+        "ORD-150712": 1,
+        "ORD-107076": 1,
+        "ORD-095097": 1
+      }
+    },
+    "Order_Time": {
+      "cardinality": 67367,
+      "top": {
+        "09:55:36": 17,
+        "09:15:55": 16,
+        "07:51:40": 15,
+        "09:01:27": 15,
+        "08:08:49": 15,
+        "09:21:38": 15,
+        "07:20:09": 14,
+        "09:43:46": 14,
+        "09:49:53": 14,
+        "09:25:50": 14
+      }
+    },
+    "Customer_ID": {
+      "cardinality": 69728,
+      "top": {
+        "CUST-017913": 12,
+        "CUST-026919": 11,
+        "CUST-034775": 11,
+        "CUST-041977": 11,
+        "CUST-067084": 11,
+        "CUST-001831": 10,
+        "CUST-002711": 10,
+        "CUST-003529": 10,
+        "CUST-004319": 10,
+        "CUST-013763": 10
+      }
+    },
+    "Customer_Name": {
+      "cardinality": 69728,
+      "top": {
+        "Carlos Robinson 17912": 12,
+        "Benjamin Choi 26918": 11,
+        "Sana Taylor 34774": 11,
+        "Maria Hall 41976": 11,
+        "Sophia Rodriguez 67083": 11,
+        "Ming Williams 1830": 10,
+        "Ethan Fernandez 2710": 10,
+        "Oliver Park 3528": 10,
+        "Elena Martinez 4318": 10,
+        "Ming Smith 13762": 10
+      }
+    },
+    "Customer_Gender": {
+      "cardinality": 4,
+      "top": {
+        "Male": 95955,
+        "Female": 93869,
+        "Non-binary": 6043,
+        "Prefer not to say": 4133
+      }
+    },
+    "Customer_Country": {
+      "cardinality": 51,
+      "top": {
+        "Czech Republic": 4203,
+        "Kenya": 4167,
+        "Sweden": 4118,
+        "Morocco": 4109,
+        "Brazil": 4079,
+        "Australia": 4061,
+        "Germany": 4018,
+        "Mexico": 4015,
+        "Pakistan": 4009,
+        "Argentina": 4001
+      }
+    },
+    "Customer_Continent": {
+      "cardinality": 6,
+      "top": {
+        "Europe": 74381,
+        "Asia": 70019,
+        "Africa": 19991,
+        "South America": 15939,
+        "North America": 11794,
+        "Oceania": 7876
+      }
+    },
+    "Customer_City": {
+      "cardinality": 208,
+      "top": {
+        "Doha": 3914,
+        "Kuwait City": 3834,
+        "Singapore": 3745,
+        "Cork": 2014,
+        "Dublin": 1941,
+        "Thessaloniki": 1907,
+        "Athens": 1845,
+        "Brno": 1457,
+        "Prague": 1415,
+        "Graz": 1398
+      }
+    },
+    "Customer_Region": {
+      "cardinality": 187,
+      "top": {
+        "Doha": 3914,
+        "Kuwait City": 3834,
+        "Singapore": 3745,
+        "Dublin": 2007,
+        "Cork": 1948,
+        "Pirkanmaa": 1923,
+        "Attica": 1910,
+        "Central Macedonia": 1842,
+        "Uusimaa": 1831,
+        "East Flanders": 1411
+      }
+    },
+    "Customer_Segment": {
+      "cardinality": 6,
+      "top": {
+        "Regular Customer": 70528,
+        "New Customer": 60267,
+        "Premium Customer": 29730,
+        "At-Risk Customer": 19387,
+        "VIP Customer": 10191,
+        "Dormant Customer": 9897
+      }
+    },
+    "Product_ID": {
+      "cardinality": 10000,
+      "top": {
+        "PROD-001023": 39,
+        "PROD-002265": 38,
+        "PROD-003633": 37,
+        "PROD-006381": 37,
+        "PROD-000049": 36,
+        "PROD-002967": 36,
+        "PROD-000781": 35,
+        "PROD-009394": 35,
+        "PROD-006030": 35,
+        "PROD-002932": 34
+      }
+    },
+    "SKU": {
+      "cardinality": 10000,
+      "top": {
+        "COMP-LEN-1023": 39,
+        "AUTO-BOS-2265": 38,
+        "AUTO-BRI-3633": 37,
+        "COMP-LEN-6381": 37,
+        "BEAU-DOV-0049": 36,
+        "FURN-STE-2967": 36,
+        "PET -ROY-0781": 35,
+        "MOBI-APP-9394": 35,
+        "BOOK-SIM-6030": 35,
+        "HEAL-NAT-2932": 34
+      }
+    },
+    "Product_Name": {
+      "cardinality": 10000,
+      "top": {
+        "Essential Lenovo Laptops": 39,
+        "Premium Bosch Car Electronics 2265": 38,
+        "Essential Bridgestone Exterior Accessories": 37,
+        "Classic Lenovo Storage Devices 6381": 37,
+        "Smart Dove Grooming": 36,
+        "Premium Steelcase Desks": 36,
+        "Classic Royal Canin Pet Food": 35,
+        "Pro Apple Power Banks 9394": 35,
+        "Classic Simon & Schuster E-Books 6030": 35,
+        "Premium Nature Made Wellness": 34
+      }
+    },
+    "Product_Category": {
+      "cardinality": 20,
+      "top": {
+        "Electronics": 20577,
+        "Fashion": 19664,
+        "Mobile Phones": 17254,
+        "Computers & Accessories": 16571,
+        "Home & Kitchen": 16533,
+        "Beauty & Personal Care": 13991,
+        "Sports & Fitness": 10708,
+        "Furniture": 10568,
+        "Books": 9993,
+        "Toys & Games": 9395
+      }
+    },
+    "Product_Subcategory": {
+      "cardinality": 126,
+      "top": {
+        "Sportswear": 4189,
+        "Screen Protectors": 3089,
+        "Phone Cases": 2985,
+        "Accessories": 2961,
+        "Smartphones": 2957,
+        "Power Banks": 2919,
+        "Speakers": 2866,
+        "Hair Care": 2808,
+        "Chargers": 2735,
+        "Makeup": 2580
+      }
+    },
+    "Brand": {
+      "cardinality": 123,
+      "top": {
+        "Black+Decker": 4421,
+        "IKEA": 4416,
+        "Nike": 4339,
+        "Samsung": 4237,
+        "Apple": 4186,
+        "Puma": 3659,
+        "Adidas": 3369,
+        "Sonos": 2739,
+        "Dyson": 2456,
+        "Panasonic": 2450
+      }
+    },
+    "Payment_Method": {
+      "cardinality": 8,
+      "top": {
+        "Credit Card": 48477,
+        "Debit Card": 39571,
+        "PayPal": 29206,
+        "Apple Pay": 19093,
+        "Buy Now Pay Later": 18042,
+        "Bank Transfer": 16239,
+        "Google Pay": 15565,
+        "Cash on Delivery": 13807
+      }
+    },
+    "Payment_Status": {
+      "cardinality": 4,
+      "top": {
+        "Paid": 132371,
+        "Pending": 45023,
+        "Failed": 15398,
+        "Refunded": 7208
+      }
+    },
+    "Order_Status": {
+      "cardinality": 5,
+      "top": {
+        "Delivered": 140112,
+        "Processing": 19887,
+        "Shipped": 15987,
+        "Cancelled": 12019,
+        "Returned": 11995
+      }
+    },
+    "Shipping_Method": {
+      "cardinality": 5,
+      "top": {
+        "Standard": 100015,
+        "Express": 39964,
+        "Economy": 30072,
+        "International": 20060,
+        "Same Day": 9889
+      }
+    },
+    "Return_Status": {
+      "cardinality": 2,
+      "top": {
+        "No Return": 191670,
+        "Returned": 8330
+      }
+    },
+    "Return_Reason": {
+      "cardinality": 9,
+      "top": {
+        "NaN": 191670,
+        "Changed Mind": 1088,
+        "Damaged During Shipping": 1069,
+        "Late Delivery": 1053,
+        "Quality Issue": 1047,
+        "Defective Product": 1033,
+        "Wrong Size": 1015,
+        "Not as Described": 1014,
+        "Wrong Item": 1011
+      }
+    },
+    "Marketing_Channel": {
+      "cardinality": 10,
+      "top": {
+        "Display Advertising": 20149,
+        "Organic Search": 20145,
+        "Social Media": 20099,
+        "Referral": 20091,
+        "Influencer Marketing": 20010,
+        "Paid Search": 19995,
+        "Direct": 19962,
+        "Marketplace": 19923,
+        "Affiliate": 19866,
+        "Email Marketing": 19760
+      }
+    },
+    "Device_Type": {
+      "cardinality": 3,
+      "top": {
+        "Mobile": 109851,
+        "Desktop": 70209,
+        "Tablet": 19940
+      }
+    },
+    "Coupon_Used": {
+      "cardinality": 2,
+      "top": {
+        "false": 170165,
+        "true": 29835
+      }
+    },
+    "Coupon_Code": {
+      "cardinality": 13,
+      "top": {
+        "NaN": 170165,
+        "FLASH20": 2554,
+        "CYBERMONDAY": 2509,
+        "SUMMER15": 2505,
+        "SAVE10": 2501,
+        "NEWUSER10": 2499,
+        "HOLIDAY20": 2494,
+        "VIP25": 2481,
+        "BLACKFRIDAY": 2477,
+        "WELCOME15": 2468
+      }
+    },
+    "Review_Sentiment": {
+      "cardinality": 3,
+      "top": {
+        "Positive": 108448,
+        "Neutral": 61660,
+        "Negative": 29892
+      }
+    },
+    "Is_Repeat_Customer": {
+      "cardinality": 2,
+      "top": {
+        "true": 130272,
+        "false": 69728
+      }
+    },
+    "Sales_Region": {
+      "cardinality": 5,
+      "top": {
+        "Asia Pacific": 77895,
+        "Europe": 74381,
+        "Africa": 19991,
+        "Latin America": 15939,
+        "North America": 11794
+      }
+    },
+    "Warehouse": {
+      "cardinality": 12,
+      "top": {
+        "London": 16883,
+        "Dubai": 16778,
+        "Mumbai": 16773,
+        "Amsterdam": 16729,
+        "Los Angeles": 16710,
+        "Hong Kong": 16639,
+        "Sydney": 16639,
+        "Singapore": 16597,
+        "Frankfurt": 16595,
+        "Karachi": 16594
+      }
+    },
+    "Supplier": {
+      "cardinality": 9,
+      "top": {
+        "Urban Fashion Wholesale": 22488,
+        "Global Tech Distribution": 22380,
+        "Quality Goods International": 22324,
+        "International Retail Distribution": 22225,
+        "Direct Import Source": 22161,
+        "Asia Consumer Goods Ltd": 22160,
+        "Global Home Supplies": 22114,
+        "Smart Products Distribution": 22104,
+        "Premium Electronics Supply": 22044
+      }
+    },
+    "Is_Bestseller_Product": {
+      "cardinality": 2,
+      "top": {
+        "false": 170689,
+        "true": 29311
+      }
+    },
+    "Is_New_Customer": {
+      "cardinality": 2,
+      "top": {
+        "false": 193188,
+        "true": 6812
+      }
+    },
+    "Is_First_Order": {
+      "cardinality": 2,
+      "top": {
+        "false": 130272,
+        "true": 69728
+      }
+    }
+  },
+  "correlations": [
+    {
+      "left": "Unit_Price_USD",
+      "right": "Gross_Sales_USD",
+      "pearson": 0.8182539011606166
+    },
+    {
+      "left": "Unit_Price_USD",
+      "right": "Net_Sales_USD",
+      "pearson": 0.8107558176036829
+    },
+    {
+      "left": "Unit_Price_USD",
+      "right": "Total_Order_Value_USD",
+      "pearson": 0.8087647057325251
+    },
+    {
+      "left": "Gross_Sales_USD",
+      "right": "Net_Sales_USD",
+      "pearson": 0.9907715208793306
+    },
+    {
+      "left": "Gross_Sales_USD",
+      "right": "Tax_USD",
+      "pearson": 0.8857769853189499
+    },
+    {
+      "left": "Gross_Sales_USD",
+      "right": "Total_Order_Value_USD",
+      "pearson": 0.9884273180202701
+    },
+    {
+      "left": "Gross_Sales_USD",
+      "right": "Order_Profit_USD",
+      "pearson": 0.8404513680020858
+    },
+    {
+      "left": "Net_Sales_USD",
+      "right": "Tax_USD",
+      "pearson": 0.8941033166800562
+    },
+    {
+      "left": "Net_Sales_USD",
+      "right": "Total_Order_Value_USD",
+      "pearson": 0.9976436212372607
+    },
+    {
+      "left": "Net_Sales_USD",
+      "right": "Order_Profit_USD",
+      "pearson": 0.8806576479958337
+    },
+    {
+      "left": "Tax_USD",
+      "right": "Total_Order_Value_USD",
+      "pearson": 0.9223580784493834
+    },
+    {
+      "left": "Total_Order_Value_USD",
+      "right": "Order_Profit_USD",
+      "pearson": 0.8779509955668188
+    }
+  ],
+  "customer": {
+    "repeat_purchase_rate": 0.8003671408903167
+  },
+  "top_products": [
+    {
+      "Product_ID": "PROD-008202",
+      "Product_Name": "Smart Acer Monitors 8202",
+      "volume": 78,
+      "revenue": 105488.0
+    },
+    {
+      "Product_ID": "PROD-002456",
+      "Product_Name": "Ultra Razer Mice 2456",
+      "volume": 70,
+      "revenue": 93389.66
+    },
+    {
+      "Product_ID": "PROD-005386",
+      "Product_Name": "Modern Lenovo Mice 5386",
+      "volume": 68,
+      "revenue": 91506.0
+    },
+    {
+      "Product_ID": "PROD-003376",
+      "Product_Name": "Modern Corsair Laptops",
+      "volume": 72,
+      "revenue": 90863.59
+    },
+    {
+      "Product_ID": "PROD-009679",
+      "Product_Name": "Modern Acer Laptops",
+      "volume": 69,
+      "revenue": 88325.29
+    },
+    {
+      "Product_ID": "PROD-009535",
+      "Product_Name": "Modern Dell Keyboards 9535",
+      "volume": 64,
+      "revenue": 83792.36
+    },
+    {
+      "Product_ID": "PROD-002358",
+      "Product_Name": "Premium Panasonic Streaming Devices",
+      "volume": 63,
+      "revenue": 83637.97
+    },
+    {
+      "Product_ID": "PROD-007822",
+      "Product_Name": "Ultra Samsung Headphones 7822",
+      "volume": 65,
+      "revenue": 81915.57
+    },
+    {
+      "Product_ID": "PROD-005129",
+      "Product_Name": "Smart Samsung Gaming Consoles",
+      "volume": 61,
+      "revenue": 81148.78
+    },
+    {
+      "Product_ID": "PROD-006918",
+      "Product_Name": "Luxury Razer Monitors 6918",
+      "volume": 63,
+      "revenue": 80296.75
+    }
+  ],
+  "possible_leakage_columns": [
+    "Return_Status",
+    "Return_Reason",
+    "Customer_Rating",
+    "Review_Sentiment",
+    "Order_Profit_USD"
+  ],
+  "sanity_checks": [
+    "Gross_Sales_USD: no negative values found",
+    "Net_Sales_USD: no negative values found",
+    "Total_Order_Value_USD: no negative values found",
+    "Order_Date: 64517 future date(s) found"
+  ],
+  "outlier_counts": {
+    "Discount_Amount_USD": 25430,
+    "Order_Profit_USD": 25291,
+    "Unit_Price_USD": 25245,
+    "Tax_USD": 24265,
+    "Total_Order_Value_USD": 21455,
+    "Net_Sales_USD": 21352,
+    "Gross_Sales_USD": 20501,
+    "Delivery_Days": 15780,
+    "Shipping_Cost_USD": 12933,
+    "Profit_Margin_Percentage": 12245,
+    "Customer_Rating": 12043,
+    "Customer_Age": 0,
+    "Quantity": 0,
+    "Discount_Percentage": 0,
+    "Tax_Rate_Percentage": 0
+  },
+  "near_zero_variance_columns": [],
+  "zero_transaction_analysis": {
+    "zero_transaction_dates": [
+      "2026-01-29",
+      "2026-01-30",
+      "2026-01-31",
+      "2026-03-29",
+      "2026-03-30",
+      "2026-03-31",
+      "2026-04-29",
+      "2026-04-30",
+      "2026-05-29",
+      "2026-07-29",
+      "2026-07-30",
+      "2026-07-31",
+      "2026-08-29"
+    ],
+    "count": 13,
+    "day_of_week": [
+      "Friday",
+      "Monday",
+      "Saturday",
+      "Sunday",
+      "Thursday",
+      "Tuesday",
+      "Wednesday"
+    ],
+    "day_of_month": [
+      29,
+      30,
+      31
+    ],
+    "days_from_month_end": [
+      0,
+      1,
+      2
+    ],
+    "all_within_final_three_days_of_month": true,
+    "spacing_days": [
+      1,
+      1,
+      57,
+      1,
+      1,
+      29,
+      1,
+      29,
+      61,
+      1,
+      1,
+      29
+    ],
+    "spacing_is_even": false
+  },
+  "sales_kpis": {
+    "total_revenue": 105739089.34,
+    "total_orders": 200000.0,
+    "average_order_value": 528.6954467,
+    "period_over_period_growth_rate": -0.023684587374982313
+  },
+  "notable_findings": [
+    "The 13 zero-transaction dates are 2026-01-29, 2026-01-30, 2026-01-31, 2026-03-29, 2026-03-30, 2026-03-31, 2026-04-29, 2026-04-30, 2026-05-29, 2026-07-29, 2026-07-30, 2026-07-31, 2026-08-29. All fall within the final three calendar days of a month, but they are not evenly spaced and span multiple weekdays and day-of-month values. This is a month-end data-gap pattern; no calendar feature was added because it is not a stable single-date signal.",
+    "Gross sales, net sales, total order value, tax, order profit, quantity, and unit price form correlation clusters. This multicollinearity is expected because these fields are arithmetically derived from one another, such as Net Sales = Gross Sales - Discount."
+  ]
+}

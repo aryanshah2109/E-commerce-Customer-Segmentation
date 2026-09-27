@@ -1,0 +1,20 @@
+{
+  "customer_features": {
+    "rows": 69728,
+    "columns": 12,
+    "output_path": "data\\processed\\customer_features\\customer_features.csv"
+  },
+  "sales_features": {
+    "rows": 365,
+    "columns": 16,
+    "output_path": "data\\processed\\sales_features\\sales_features.csv"
+  },
+  "reference_date": "2026-12-31",
+  "deliberately_reused_modeling_exclude_columns": {
+    "Return_Status": "Used to calculate return_rate as a descriptive customer behavior signal for segmentation; segmentation has no future-outcome target."
+  },
+  "zero_transaction_days_reindexed": "13 zero-transaction days were reindexed as zero-value rows, not dropped.",
+  "gap_day_column": "is_gap_day marks zero-transaction data gaps.",
+  "gap_filled_sales_usage": "gap_filled_sales is retained as a gap-smoothed descriptive series; total_sales remains the observed daily total.",
+  "scaling_or_encoding": "Not introduced in Phase 5."
+}
