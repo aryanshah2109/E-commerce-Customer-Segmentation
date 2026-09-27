@@ -18,6 +18,7 @@ if str(SOURCE_ROOT) not in sys.path:
     sys.path.insert(0, str(SOURCE_ROOT))
 
 from customer_sales_analytics.config.io import load_yaml
+from customer_sales_analytics.config.logging import configure_logging
 from customer_sales_analytics.data.loader import load_raw_data
 from customer_sales_analytics.eda.categorical_analysis import compute_categorical_analysis
 from customer_sales_analytics.eda.correlation_analysis import compute_correlation_analysis
@@ -67,7 +68,7 @@ def main() -> int:
         default=Path("configs/paths.yaml"),
     )
     args = parser.parse_args()
-    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+    configure_logging("eda")
     data_config = load_yaml(args.data_config)
     paths_config = load_yaml(args.paths_config)
     seed = int(data_config["seed"])

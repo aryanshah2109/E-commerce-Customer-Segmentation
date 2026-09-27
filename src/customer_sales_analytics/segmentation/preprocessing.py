@@ -2,7 +2,12 @@
 
 from __future__ import annotations
 
+import json
+from itertools import combinations
+from pathlib import Path
+
 import numpy as np
+import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.decomposition import PCA
 from sklearn.pipeline import Pipeline
@@ -30,6 +35,63 @@ CUSTOMER_CATEGORICAL_COLUMNS = [
 ]
 
 
+def write_customer_feature_correlation_report(
+    customer_features: pd.DataFrame,
+    output_path: Path,
+    correlation_threshold: float = 0.80,
+) -> dict[str, object]:
+    """Compute and write Pearson correlations for customer numeric features.
+
+    Args:
+        customer_features: Customer-level feature table.
+        output_path: JSON report destination.
+        correlation_threshold: Absolute correlation threshold to flag.
+
+    Returns:
+        A serializable correlation matrix and flagged feature pairs.
+
+    Raises:
+        KeyError: If a configured numeric feature is missing.
+        ValueError: If the threshold is outside the unit interval.
+    """
+    if not 0.0 <= correlation_threshold <= 1.0:
+        raise ValueError("correlation_threshold must be between zero and one")
+
+    missing_columns = set(CUSTOMER_NUMERIC_COLUMNS).difference(
+        customer_features.columns
+    )
+    if missing_columns:
+        raise KeyError(f"Missing customer numeric columns: {sorted(missing_columns)}")
+
+    numeric_features = customer_features[CUSTOMER_NUMERIC_COLUMNS].apply(
+        pd.to_numeric,
+        errors="raise",
+    )
+    correlation_matrix = numeric_features.corr(method="pearson")
+    flagged_pairs = []
+    for left_column, right_column in combinations(CUSTOMER_NUMERIC_COLUMNS, 2):
+        correlation = float(correlation_matrix.loc[left_column, right_column])
+        if abs(correlation) > correlation_threshold:
+            flagged_pairs.append(
+                {
+                    "feature_1": left_column,
+                    "feature_2": right_column,
+                    "correlation": correlation,
+                    "absolute_correlation": abs(correlation),
+                }
+            )
+
+    report = {
+        "columns": CUSTOMER_NUMERIC_COLUMNS,
+        "correlation_threshold": correlation_threshold,
+        "correlation_matrix": correlation_matrix.round(6).to_dict(),
+        "flagged_pairs": flagged_pairs,
+    }
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report
+
+
 def _build_numeric_transformers(
     use_robust_scaler: bool = False,
 ) -> list[tuple[str, object, list[str]]]:
@@ -51,6 +113,7 @@ def _build_numeric_transformers(
             [
                 "recency_days",
                 "frequency",
+                "order_value_std",
                 "product_diversity",
                 "purchase_velocity",
                 "return_rate",
