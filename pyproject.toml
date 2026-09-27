@@ -8,12 +8,24 @@ authors = [
 ]
 requires-python = ">=3.14"
 dependencies = [
+    "black>=26.5.1",
+    "matplotlib>=3.11.2",
+    "mypy>=2.3.1",
+    "numpy>=2.5.3",
+    "pandas>=3.0.6",
     "pandera>=0.33.1",
+    "pytest>=9.1.1",
     "pyyaml>=6.0.3",
+    "ruff>=0.16.9",
+    "scikit-learn>=1.9.1",
+    "seaborn>=0.13.2",
+    "statsmodels>=0.15.0",
+    "streamlit>=1.64.0",
 ]
 
 [project.scripts]
 project = "project:main"
+customer-sales-pipeline = "customer_sales_analytics.pipelines.main_pipeline:main"
 
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]

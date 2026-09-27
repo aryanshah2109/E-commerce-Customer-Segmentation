@@ -28,3 +28,7 @@ models/
 # Source package named data is code, not generated data
 !src/customer_sales_analytics/data/
 !src/customer_sales_analytics/data/**/*.py
+
+# docx and packages
+.docx_packages/
+docs/

@@ -17,6 +17,7 @@ if str(SOURCE_ROOT) not in sys.path:
     sys.path.insert(0, str(SOURCE_ROOT))
 
 from customer_sales_analytics.config.io import load_yaml
+from customer_sales_analytics.config.logging import configure_logging
 from customer_sales_analytics.data.loader import load_raw_data
 from customer_sales_analytics.features.customer.pipeline import (
     build_customer_feature_table,
@@ -60,7 +61,7 @@ def main() -> int:
         default=Path("configs/preprocessing_config.yaml"),
     )
     args = parser.parse_args()
-    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+    configure_logging("build_features")
 
     try:
         data_config = load_yaml(args.data_config)

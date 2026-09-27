@@ -17,6 +17,7 @@ if str(SOURCE_ROOT) not in sys.path:
     sys.path.insert(0, str(SOURCE_ROOT))
 
 from customer_sales_analytics.config.io import load_yaml
+from customer_sales_analytics.config.logging import configure_logging
 from customer_sales_analytics.data.splitting import (
     split_customer_features,
     split_sales_features,
@@ -55,7 +56,7 @@ def main() -> int:
         default=Path("configs/paths.yaml"),
     )
     args = parser.parse_args()
-    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+    configure_logging("create_splits")
 
     try:
         data_config = load_yaml(args.data_config)

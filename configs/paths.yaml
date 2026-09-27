@@ -11,6 +11,7 @@ artifacts:
   model_comparison: artifacts/model_comparison
 models:
   segmentation_candidates: models/segmentation/candidates
+  best_model: models/segmentation/best_model
   model_comparison: artifacts/model_comparison
 splits:
   train_size: 0.70

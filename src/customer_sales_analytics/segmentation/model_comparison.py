@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import logging
+import json
+from pathlib import Path
 
 import pandas as pd
 from sklearn.compose import ColumnTransformer
@@ -187,3 +189,61 @@ def evaluate_hdbscan_candidates(
         )
 
     return pd.DataFrame(comparison_rows)
+
+
+def write_cluster_size_diagnostics(
+    labels_by_seed: dict[int, object],
+    output_path: Path,
+    dominance_threshold: float = 0.90,
+) -> dict[str, object]:
+    """Write cluster label sizes and detect one-versus-rest splits.
+
+    Args:
+        labels_by_seed: Validation labels keyed by stability seed.
+        output_path: JSON report destination.
+        dominance_threshold: Largest-cluster share considered dominant.
+
+    Returns:
+        A serializable diagnostic report for every seed.
+
+    Raises:
+        ValueError: If ``dominance_threshold`` is outside the unit interval.
+    """
+    if not 0.0 < dominance_threshold <= 1.0:
+        raise ValueError("dominance_threshold must be between zero and one")
+
+    seed_reports = {}
+    for seed, labels in labels_by_seed.items():
+        counts = pd.Series(labels).value_counts().sort_index()
+        total_rows = int(counts.sum())
+        largest_cluster_share = (
+            float(counts.max() / total_rows) if total_rows else 0.0
+        )
+        cluster_count = int(len(counts))
+        is_degenerate = (
+            cluster_count == 2
+            and largest_cluster_share >= dominance_threshold
+        )
+        seed_reports[str(seed)] = {
+            "cluster_sizes": {
+                str(cluster): int(size) for cluster, size in counts.items()
+            },
+            "cluster_count": cluster_count,
+            "total_rows": total_rows,
+            "largest_cluster_share": largest_cluster_share,
+            "is_degenerate_1_vs_rest": is_degenerate,
+        }
+
+    report = {
+        "dominance_threshold": dominance_threshold,
+        "scoring_scope": "validation_labels",
+        "seeds": seed_reports,
+        "any_degenerate_1_vs_rest": any(
+            seed_report["is_degenerate_1_vs_rest"]
+            for seed_report in seed_reports.values()
+        ),
+    }
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    LOGGER.info("Wrote cluster size diagnostics to %s", output_path)
+    return report

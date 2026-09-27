@@ -6,6 +6,7 @@ import argparse
 import json
 import logging
 import sys
+import warnings
 from pathlib import Path
 
 import joblib
@@ -20,6 +21,7 @@ if str(SOURCE_ROOT) not in sys.path:
     sys.path.insert(0, str(SOURCE_ROOT))
 
 from customer_sales_analytics.config.io import load_yaml
+from customer_sales_analytics.config.logging import configure_logging
 from customer_sales_analytics.segmentation.clustering_models import (
     build_agglomerative_candidates,
     build_baseline_model,
@@ -31,6 +33,7 @@ from customer_sales_analytics.segmentation.model_comparison import (
     evaluate_agglomerative_candidates,
     evaluate_clustering_candidates,
     evaluate_hdbscan_candidates,
+    write_cluster_size_diagnostics,
 )
 from customer_sales_analytics.segmentation.profiling import build_cluster_profile
 from customer_sales_analytics.segmentation.preprocessing import (
@@ -39,6 +42,7 @@ from customer_sales_analytics.segmentation.preprocessing import (
     build_customer_preprocessing_pipeline,
     build_customer_robust_numeric_pipeline,
     build_customer_robust_pca_pipeline,
+    write_customer_feature_correlation_report,
 )
 
 LOGGER = logging.getLogger(__name__)
@@ -184,15 +188,37 @@ def _compute_kmeans_stability(
     train_df: pd.DataFrame,
     validation_df: pd.DataFrame,
     seed_values: list[int],
+    cluster_count: int = 2,
 ) -> dict[str, object]:
-    """Measure a two-cluster KMeans candidate across configured seeds."""
+    """Measure a KMeans candidate across configured stability seeds.
+
+    Args:
+        pipeline_factory: Callable that returns an unfitted preprocessing
+            pipeline, optionally accepting a PCA component count.
+        n_components: PCA component count, or ``None`` for non-PCA pipelines.
+        train_df: Customer training feature table.
+        validation_df: Customer validation feature table.
+        seed_values: Random seeds used for the stability sweep.
+        cluster_count: KMeans cluster count to evaluate.
+
+    Returns:
+        Mean, standard deviation, and per-seed clustering metrics.
+    """
     scores = []
     for seed in seed_values:
-        candidate = build_baseline_model(2)
-        candidate.set_params(random_state=seed)
+        candidate_name = (
+            "baseline_kmeans_2" if cluster_count == 2 else f"kmeans_{cluster_count}"
+        )
+        if cluster_count == 2:
+            candidate = build_baseline_model(2)
+            candidate.set_params(random_state=seed)
+        else:
+            candidate = build_kmeans_candidates([cluster_count], seed)[
+                candidate_name
+            ]
         pipeline = pipeline_factory(n_components) if n_components else pipeline_factory()
         comparison_df = evaluate_clustering_candidates(
-            {"baseline_kmeans_2": candidate},
+            {candidate_name: candidate},
             pipeline,
             train_df,
             validation_df,
@@ -206,6 +232,7 @@ def _compute_kmeans_stability(
         [float(row["davies_bouldin_score"]) for row in scores]
     )
     return {
+        "model_name": candidate_name,
         "seeds": seed_values,
         "silhouette_mean": float(silhouette_values.mean()),
         "silhouette_std": float(silhouette_values.std()),
@@ -246,6 +273,96 @@ def _compute_hdbscan_stability(
     }
 
 
+def _collect_validation_labels(
+    pipeline_factory: object,
+    n_components: int | None,
+    train_df: pd.DataFrame,
+    validation_df: pd.DataFrame,
+    seed_values: list[int],
+    cluster_count: int,
+) -> dict[int, object]:
+    """Collect validation labels for cluster-size stability diagnostics.
+
+    Args:
+        pipeline_factory: Callable that returns an unfitted preprocessing
+            pipeline, optionally accepting a PCA component count.
+        n_components: PCA component count, or ``None`` for non-PCA pipelines.
+        train_df: Customer training feature table.
+        validation_df: Customer validation feature table.
+        seed_values: Random seeds used for the stability sweep.
+        cluster_count: KMeans cluster count to evaluate.
+
+    Returns:
+        Validation labels keyed by random seed.
+    """
+    labels_by_seed = {}
+    for seed in seed_values:
+        candidate_name = (
+            "baseline_kmeans_2" if cluster_count == 2 else f"kmeans_{cluster_count}"
+        )
+        if cluster_count == 2:
+            candidate = build_baseline_model(2)
+            candidate.set_params(random_state=seed)
+        else:
+            candidate = build_kmeans_candidates([cluster_count], seed)[
+                candidate_name
+            ]
+        pipeline = pipeline_factory(n_components) if n_components else pipeline_factory()
+        transformed_train = pipeline.fit_transform(train_df)
+        transformed_validation = pipeline.transform(validation_df)
+        candidate.fit(transformed_train)
+        labels_by_seed[seed] = candidate.predict(transformed_validation)
+
+    return labels_by_seed
+
+
+def _write_pca_loadings_report(
+    train_df: pd.DataFrame,
+    output_path: Path,
+) -> dict[str, object]:
+    """Fit PCA-2 on training data and write feature loading diagnostics.
+
+    Args:
+        train_df: Customer training feature table.
+        output_path: JSON report destination.
+
+    Returns:
+        A serializable PCA loading report.
+    """
+    pca_pipeline = build_customer_pca_pipeline(2)
+    pca_pipeline.fit(train_df)
+    numeric_pipeline = pca_pipeline.named_steps["numeric"]
+    pca = pca_pipeline.named_steps["pca"]
+    feature_names = []
+    for transformer_name, _, columns in numeric_pipeline.transformers_:
+        if transformer_name != "remainder":
+            feature_names.extend(columns)
+    report = {
+        "n_components": 2,
+        "feature_names": feature_names,
+        "components": [
+            {
+                "component": index + 1,
+                "loadings": {
+                    feature_name: float(loading)
+                    for feature_name, loading in zip(
+                        feature_names,
+                        component,
+                    )
+                },
+            }
+            for index, component in enumerate(pca.components_)
+        ],
+        "explained_variance_ratio": [
+            float(value) for value in pca.explained_variance_ratio_
+        ],
+    }
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    LOGGER.info("Wrote PCA loadings to %s", output_path)
+    return report
+
+
 def main() -> int:
     """Compare configured segmentation candidates on train and validation data.
 
@@ -264,7 +381,14 @@ def main() -> int:
         default=Path("configs/paths.yaml"),
     )
     args = parser.parse_args()
-    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+    configure_logging("segmentation_comparison")
+    warnings.filterwarnings("ignore", category=FutureWarning, module="sklearn")
+    warnings.filterwarnings(
+        "ignore",
+        message="the number of connected components.*",
+        category=UserWarning,
+        module="sklearn",
+    )
 
     try:
         data_config = load_yaml(args.data_config)
@@ -278,8 +402,10 @@ def main() -> int:
             Path(split_paths["validation"]) / "validation.csv"
         )
         comparison_directory = Path(paths_config["artifacts"]["model_comparison"])
+        report_directory = Path(paths_config["artifacts"]["reports"])
         model_directory = Path(paths_config["models"]["segmentation_candidates"])
         comparison_directory.mkdir(parents=True, exist_ok=True)
+        report_directory.mkdir(parents=True, exist_ok=True)
         model_directory.mkdir(parents=True, exist_ok=True)
         previous_comparison_tables = {}
         for pipeline_name in ("full", "numeric_only"):
@@ -315,6 +441,15 @@ def main() -> int:
                 / f"segmentation_comparison_{pipeline_name}.csv"
             )
             comparison_df.to_csv(comparison_path, index=False)
+
+        write_customer_feature_correlation_report(
+            train_df,
+            report_directory / "customer_feature_correlation.json",
+        )
+        _write_pca_loadings_report(
+            train_df,
+            report_directory / "pca_loadings.json",
+        )
 
         agglomerative_candidates = build_agglomerative_candidates(
             segmentation_config["kmeans_cluster_counts"]
@@ -394,6 +529,41 @@ def main() -> int:
         pca_sweep_path = comparison_directory / "segmentation_comparison_pca_sweep.csv"
         pca_sweep_df.to_csv(pca_sweep_path, index=False)
 
+        pca2_cluster_sweep_tables = {}
+        pca2_cluster_sweep_stability = {}
+        pca2_cluster_counts = [3, 4, 5]
+        for cluster_count in pca2_cluster_counts:
+            candidate_name = f"kmeans_{cluster_count}"
+            candidate = build_kmeans_candidates([cluster_count], seed)[
+                candidate_name
+            ]
+            pca2_pipeline = build_customer_pca_pipeline(2)
+            pca2_cluster_df = evaluate_clustering_candidates(
+                {candidate_name: candidate},
+                pca2_pipeline,
+                train_df,
+                validation_df,
+            )
+            pca2_cluster_df["pca_n_components"] = 2
+            pca2_cluster_df["cluster_count"] = cluster_count
+            pca2_cluster_sweep_tables[cluster_count] = pca2_cluster_df
+            pca2_cluster_sweep_stability[candidate_name] = _compute_kmeans_stability(
+                build_customer_pca_pipeline,
+                2,
+                train_df,
+                validation_df,
+                seed_values,
+                cluster_count,
+            )
+        pca2_cluster_sweep_df = pd.concat(
+            pca2_cluster_sweep_tables.values(),
+            ignore_index=True,
+        )
+        pca2_cluster_sweep_path = (
+            comparison_directory / "segmentation_comparison_pca2_clusters.csv"
+        )
+        pca2_cluster_sweep_df.to_csv(pca2_cluster_sweep_path, index=False)
+
         robust_candidates = {"baseline_kmeans_2": build_baseline_model(2)}
         robust_candidates["baseline_kmeans_2"].set_params(random_state=seed)
         robust_numeric_pipeline = build_customer_robust_numeric_pipeline()
@@ -438,6 +608,18 @@ def main() -> int:
             train_df,
             validation_df,
             seed_values,
+        )
+        robust_pca_labels = _collect_validation_labels(
+            build_customer_robust_pca_pipeline,
+            int(segmentation_config["pca_n_components"]),
+            train_df,
+            validation_df,
+            seed_values,
+            2,
+        )
+        robust_pca_diagnostics = write_cluster_size_diagnostics(
+            robust_pca_labels,
+            report_directory / "robust_pca_cluster_size_diagnostics.json",
         )
 
         hdbscan_candidates = build_hdbscan_candidates(
@@ -505,6 +687,15 @@ def main() -> int:
                 "single_run": pca_sweep_tables[int(n_components)].iloc[0].to_dict(),
                 "stability": stability,
             }
+        for cluster_count, stability in pca2_cluster_sweep_stability.items():
+            stable_candidates[f"pca_2_{cluster_count}"] = {
+                "pipeline": "pca_2",
+                "model_name": cluster_count,
+                "single_run": pca2_cluster_sweep_tables[
+                    int(cluster_count.rsplit("_", 1)[-1])
+                ].iloc[0].to_dict(),
+                "stability": stability,
+            }
         stable_candidates["robust_numeric_baseline_kmeans_2"] = {
             "pipeline": "robust_numeric",
             "model_name": "baseline_kmeans_2",
@@ -526,9 +717,35 @@ def main() -> int:
                 "stability": hdbscan_stability[candidate_name],
             }
 
+        eligible_candidates = {}
+        selection_exclusions = {}
+        for candidate_key, candidate_details in stable_candidates.items():
+            silhouette_std = float(
+                candidate_details["stability"]["silhouette_std"]
+            )
+            if silhouette_std > 0.05:
+                reason = (
+                    "excluded because silhouette standard deviation exceeds "
+                    "the 0.05 stability limit"
+                )
+                LOGGER.info("Excluding %s: %s", candidate_key, reason)
+                selection_exclusions[candidate_key] = {
+                    "silhouette_std": silhouette_std,
+                    "reason": reason,
+                }
+                continue
+            candidate_details["stability"]["selection_score"] = float(
+                candidate_details["stability"]["silhouette_mean"]
+                - silhouette_std
+            )
+            eligible_candidates[candidate_key] = candidate_details
+
+        if not eligible_candidates:
+            raise ValueError("No segmentation candidate passed the stability limit")
+
         winner_key, winner_details = max(
-            stable_candidates.items(),
-            key=lambda item: item[1]["stability"]["silhouette_mean"],
+            eligible_candidates.items(),
+            key=lambda item: item[1]["stability"]["selection_score"],
         )
         winner_pipeline_name = winner_details["pipeline"]
         winner_model_name = winner_details["model_name"]
@@ -536,8 +753,29 @@ def main() -> int:
         if winner_pipeline_name.startswith("pca_"):
             winner_components = int(winner_pipeline_name.split("_")[1])
             winner_pipeline = build_customer_pca_pipeline(winner_components)
-            winner_candidates = {winner_model_name: build_baseline_model(2)}
-            winner_candidates[winner_model_name].set_params(random_state=seed)
+            winner_cluster_count = (
+                2
+                if winner_model_name == "baseline_kmeans_2"
+                else int(str(winner_model_name).rsplit("_", 1)[-1])
+            )
+            winner_candidate_name = (
+                "baseline_kmeans_2"
+                if winner_cluster_count == 2
+                else f"kmeans_{winner_cluster_count}"
+            )
+            if winner_cluster_count == 2:
+                winner_candidates = {
+                    winner_candidate_name: build_baseline_model(2)
+                }
+                winner_candidates[winner_candidate_name].set_params(
+                    random_state=seed
+                )
+            else:
+                winner_candidates = build_kmeans_candidates(
+                    [winner_cluster_count],
+                    seed,
+                )
+            winner_model_name = winner_candidate_name
         elif winner_pipeline_name == "robust_numeric":
             winner_pipeline = build_customer_robust_numeric_pipeline()
             winner_candidates = {winner_model_name: build_baseline_model(2)}
@@ -587,6 +825,33 @@ def main() -> int:
             if "numeric_only" in previous_comparison_tables
             else []
         )
+        full_baseline_row = full_comparison_df[
+            full_comparison_df["model_name"] == "baseline_kmeans_2"
+        ].iloc[0]
+        numeric_baseline_row = comparison_tables["numeric_only"][
+            comparison_tables["numeric_only"]["model_name"]
+            == "baseline_kmeans_2"
+        ].iloc[0]
+        full_vs_numeric_only_comparison = {
+            "cluster_count": 2,
+            "scoring_scope": "validation",
+            "full_pipeline": {
+                "silhouette_score": float(
+                    full_baseline_row["silhouette_score"]
+                ),
+                "davies_bouldin_score": float(
+                    full_baseline_row["davies_bouldin_score"]
+                ),
+            },
+            "numeric_only_pipeline": {
+                "silhouette_score": float(
+                    numeric_baseline_row["silhouette_score"]
+                ),
+                "davies_bouldin_score": float(
+                    numeric_baseline_row["davies_bouldin_score"]
+                ),
+            },
+        }
         report = {
             "full_pipeline": full_report,
             "numeric_only_pipeline": numeric_report,
@@ -596,19 +861,25 @@ def main() -> int:
             "pca_stability": pca_stability,
             "new_candidate_comparisons": {
                 "pca_sweep": pca_sweep_df.to_dict("records"),
+                "pca2_cluster_sweep": pca2_cluster_sweep_df.to_dict("records"),
                 "robust_numeric": robust_numeric_df.to_dict("records"),
                 "robust_pca": robust_pca_df.to_dict("records"),
                 "hdbscan_numeric": hdbscan_df.to_dict("records"),
             },
             "new_candidate_stability": {
                 "pca_sweep": pca_sweep_stability,
+                "pca2_cluster_sweep": pca2_cluster_sweep_stability,
                 "robust_numeric": robust_numeric_stability,
                 "robust_pca": robust_pca_stability,
                 "hdbscan_numeric": hdbscan_stability,
             },
+            "robust_pca_cluster_size_diagnostics": robust_pca_diagnostics,
+            "full_vs_numeric_only_comparison": full_vs_numeric_only_comparison,
             "stable_candidate_selection": {
                 "selected_key": winner_key,
-                "selection_metric": "mean silhouette across configured seeds",
+                "selection_metric": "silhouette_mean - silhouette_std",
+                "maximum_allowed_silhouette_std": 0.05,
+                "excluded_candidates": selection_exclusions,
                 "beats_previous_stable_baseline": bool(
                     winner_key != "pca_3_baseline_kmeans_2"
                 ),
@@ -635,8 +906,8 @@ def main() -> int:
                     winner_details["stability"]["davies_bouldin_mean"]
                 ),
                 "justification": (
-                    "Selected by highest mean silhouette across the configured "
-                    "five-seed stability check."
+                    "Selected by highest silhouette_mean - silhouette_std "
+                    "among candidates with silhouette_std at most 0.05."
                 ),
             },
             "cluster_profile_path": str(profile_path),

@@ -18,6 +18,7 @@ if str(SOURCE_ROOT) not in sys.path:
     sys.path.insert(0, str(SOURCE_ROOT))
 
 from customer_sales_analytics.config.io import load_yaml
+from customer_sales_analytics.config.logging import configure_logging
 from customer_sales_analytics.data.loader import load_raw_data
 from customer_sales_analytics.data.validation import DataValidationError, validate_data_frame
 
@@ -34,7 +35,7 @@ def main() -> int:
     parser.add_argument("--data-config", type=Path, default=Path("configs/data_config.yaml"))
     parser.add_argument("--paths-config", type=Path, default=Path("configs/paths.yaml"))
     args = parser.parse_args()
-    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+    configure_logging("prepare_data")
     data_config = load_yaml(args.data_config)
     paths_config = load_yaml(args.paths_config)
     seed = int(data_config["seed"])
