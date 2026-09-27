@@ -1,0 +1,46 @@
+seed: 42
+raw_filename: raw.csv
+validation:
+  max_null_rate: 0.20
+  allow_duplicate_rows: false
+  nullable_columns:
+    - Return_Reason
+    - Coupon_Code
+  categorical_values:
+    Customer_Gender: [Female, Male, Non-binary, Other, Prefer not to say]
+    Return_Status: [No Return, Returned]
+    Review_Sentiment: [Positive, Neutral, Negative]
+    Is_Repeat_Customer: [true, false]
+    Is_New_Customer: [true, false]
+    Is_First_Order: [true, false]
+  ranges:
+    Customer_Age: [0, 120]
+    Quantity: [1, 100000]
+    Discount_Percentage: [0, 100]
+    Tax_Rate_Percentage: [0, 100]
+    Customer_Rating: [0, 5]
+    Delivery_Days: [0, 365]
+eda:
+  low_cardinality_max: 20
+  rare_category_threshold: 0.01
+  correlation_threshold: 0.80
+  top_n: 10
+  rolling_window: 7
+
+feature_engineering:
+  reference_date: null
+
+splitting:
+  train_fraction: 0.70
+  validation_fraction: 0.15
+
+model_comparison:
+  segmentation:
+    baseline_cluster_count: 2
+    kmeans_cluster_counts: [3, 4, 5, 6, 7]
+    gaussian_mixture_component_counts: [3, 4, 5, 6, 7]
+    agglomerative_n_neighbors: 10
+    pca_n_components: 3
+    pca_n_components_options: [2, 3, 4]
+    hdbscan_min_cluster_size_options: [200, 500, 1000]
+    stability_seeds: [42, 43, 44, 45, 46]

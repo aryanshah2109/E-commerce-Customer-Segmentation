@@ -1,0 +1,26 @@
+data:
+  raw: data/raw/raw.csv
+  interim: data/interim/validated.csv
+  preprocessed_data_path: data/interim/preprocessed.csv
+  customer_features: data/processed/customer_features/customer_features.csv
+  sales_features: data/processed/sales_features/sales_features.csv
+  splits: data/splits
+artifacts:
+  reports: artifacts/reports
+  eda: artifacts/eda
+  model_comparison: artifacts/model_comparison
+models:
+  segmentation_candidates: models/segmentation/candidates
+  model_comparison: artifacts/model_comparison
+splits:
+  train_size: 0.70
+  validation_size: 0.15
+  test_size: 0.15
+  customer_segmentation:
+    train: data/splits/customer_segmentation/train
+    validation: data/splits/customer_segmentation/validation
+    test: data/splits/customer_segmentation/test
+  sales_analysis:
+    train: data/splits/sales_analysis/train
+    validation: data/splits/sales_analysis/validation
+    test: data/splits/sales_analysis/test

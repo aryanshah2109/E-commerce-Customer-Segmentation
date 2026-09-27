@@ -1,0 +1,10 @@
+null_rate_threshold: 0.2
+not_applicable_fill_values:
+  Return_Reason: Not Returned
+  Coupon_Code: No Coupon
+modeling_exclude_columns:
+- Return_Status
+- Return_Reason
+- Customer_Rating
+- Review_Sentiment
+- Order_Profit_USD
