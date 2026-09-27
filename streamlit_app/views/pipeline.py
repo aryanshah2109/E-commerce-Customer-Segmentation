@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import streamlit as st
 
+from streamlit_app.components.cards import render_kpis
 from streamlit_app.components.common import page_header, section_title
 from streamlit_app.config import DashboardPaths
 from streamlit_app.services.pipeline import run_full_pipeline
@@ -32,13 +33,16 @@ def render(paths: DashboardPaths) -> None:
         return
     if result.get("status") == "success":
         st.success("Pipeline completed successfully.")
-        columns = st.columns(6)
-        columns[0].metric("Duration", f"{result['duration_seconds']:.1f}s")
-        columns[1].metric("Model", result.get("model_name", "—"))
-        columns[2].metric("Silhouette", f"{result.get('silhouette_score', 0):.4f}")
-        columns[3].metric("Davies–Bouldin", f"{result.get('davies_bouldin_score', 0):.4f}")
-        columns[4].metric("Training rows", number(result.get("training_rows")))
-        columns[5].metric("Promotion", "Completed")
+        render_kpis(
+            [
+                ("Duration", f"{result['duration_seconds']:.1f}s", None),
+                ("Model", result.get("model_name", "—"), None),
+                ("Silhouette", f"{result.get('silhouette_score', 0):.4f}", None),
+                ("Davies–Bouldin", f"{result.get('davies_bouldin_score', 0):.4f}", None),
+                ("Training rows", number(result.get("training_rows")), None),
+                ("Promotion", "Completed", None),
+            ]
+        )
         st.caption(f"Log: {result.get('log_path', '—')}")
         st.caption("Cached dashboard data refreshes on the next page interaction or browser reload.")
     else:

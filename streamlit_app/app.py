@@ -5,6 +5,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import plotly.io as pio
 import streamlit as st
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -24,6 +25,8 @@ from streamlit_app.views import (
     sales,
     segmentation,
 )
+
+pio.templates.default = "plotly_white"
 
 
 def _load_css() -> None:

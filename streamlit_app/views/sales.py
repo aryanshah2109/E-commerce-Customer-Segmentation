@@ -6,6 +6,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
+from streamlit_app.components.cards import render_kpis
 from streamlit_app.components.charts import line_chart
 from streamlit_app.components.common import page_header, section_title, unavailable
 from streamlit_app.config import DashboardPaths
@@ -40,11 +41,14 @@ def render(paths: DashboardPaths) -> None:
     average_order = total_revenue / total_orders if total_orders else 0
     monthly = filtered_sales.assign(month=filtered_sales["Order_Date"].dt.to_period("M").astype(str)).groupby("month", as_index=False)["total_sales"].sum()
     growth = monthly["total_sales"].pct_change().iloc[-1] if len(monthly) > 1 else None
-    columns = st.columns(4)
-    columns[0].metric("Revenue", money(total_revenue))
-    columns[1].metric("Orders", number(total_orders))
-    columns[2].metric("Average order value", money(average_order))
-    columns[3].metric("Latest month-over-month", percent(growth) if growth is not None else "—")
+    render_kpis(
+        [
+            ("Revenue", money(total_revenue), None),
+            ("Orders", number(total_orders), None),
+            ("Average order value", money(average_order), None),
+            ("Latest month-over-month", percent(growth) if growth is not None else "—", None),
+        ]
+    )
 
     st.plotly_chart(line_chart(filtered_sales, "Order_Date", "total_sales", "Observed daily net sales", "Net sales (USD)"), width="stretch")
     left, right = st.columns(2)
@@ -73,6 +77,6 @@ def render(paths: DashboardPaths) -> None:
 
     section_title("Transaction gaps")
     gap_days = filtered_sales[filtered_sales["is_gap_day"]]
-    st.metric("Zero-transaction days in range", number(len(gap_days)))
+    render_kpis([("Zero-transaction days in range", number(len(gap_days)), None)])
     if not gap_days.empty:
         st.dataframe(gap_days[["Order_Date", "is_gap_day", "gap_filled_sales"]], width="stretch", hide_index=True)

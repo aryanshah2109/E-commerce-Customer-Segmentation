@@ -9,6 +9,31 @@ import plotly.graph_objects as go
 from streamlit_app.utils.helpers import CLUSTER_COLORS
 
 
+def _apply_light_theme(figure: go.Figure) -> go.Figure:
+    """Apply the dashboard's light palette to a Plotly figure."""
+    figure.update_layout(
+        paper_bgcolor="#ffffff",
+        plot_bgcolor="#ffffff",
+        font={"color": "#172033", "family": "DM Sans, sans-serif"},
+        title_font={"color": "#172033", "family": "Space Grotesk, sans-serif"},
+        legend={"font": {"color": "#172033"}},
+        margin={"l": 48, "r": 24, "t": 56, "b": 48},
+    )
+    figure.update_xaxes(
+        color="#53627a",
+        gridcolor="#e3e8ef",
+        linecolor="#cbd5e1",
+        zerolinecolor="#cbd5e1",
+    )
+    figure.update_yaxes(
+        color="#53627a",
+        gridcolor="#e3e8ef",
+        linecolor="#cbd5e1",
+        zerolinecolor="#cbd5e1",
+    )
+    return figure
+
+
 def line_chart(
     data_frame: pd.DataFrame,
     x: str,
@@ -20,7 +45,7 @@ def line_chart(
     figure = px.line(data_frame, x=x, y=y, title=title, markers=True)
     figure.update_traces(line_color="#2F6BFF", hovertemplate=None)
     figure.update_layout(yaxis_title=y_title, xaxis_title=None)
-    return figure
+    return _apply_light_theme(figure)
 
 
 def cluster_bar(data_frame: pd.DataFrame, title: str) -> go.Figure:
@@ -37,7 +62,7 @@ def cluster_bar(data_frame: pd.DataFrame, title: str) -> go.Figure:
         text_auto=True,
     )
     figure.update_layout(showlegend=False, xaxis_title="Cluster")
-    return figure
+    return _apply_light_theme(figure)
 
 
 def heatmap(matrix: pd.DataFrame, title: str) -> go.Figure:
@@ -55,7 +80,7 @@ def heatmap(matrix: pd.DataFrame, title: str) -> go.Figure:
         )
     )
     figure.update_layout(title=title, height=620)
-    return figure
+    return _apply_light_theme(figure)
 
 
 def scatter_chart(
@@ -79,4 +104,4 @@ def scatter_chart(
         opacity=0.65,
     )
     figure.update_layout(legend_title_text="Cluster")
-    return figure
+    return _apply_light_theme(figure)

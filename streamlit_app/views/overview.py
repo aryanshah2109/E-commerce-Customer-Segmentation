@@ -81,7 +81,9 @@ def render(paths: DashboardPaths) -> None:
                     ("Silhouette", f"{metrics.get('silhouette_score', 0):.4f}", "higher is better"),
                 ]
             )
-            st.metric("Davies–Bouldin", f"{metrics.get('davies_bouldin_score', 0):.4f}", help="Lower is better.")
+            render_kpis(
+                [("Davies–Bouldin", f"{metrics.get('davies_bouldin_score', 0):.4f}", "lower is better")]
+            )
             st.caption(f"Trained on {number(training.get('training_rows'))} customer records with seed {training.get('random_seed', '—')}.")
         else:
             unavailable("Model metrics are not available yet.")

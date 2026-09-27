@@ -6,6 +6,7 @@ import pandas as pd
 import streamlit as st
 
 from api.schema.prediction import CustomerFeatures
+from streamlit_app.components.cards import render_kpis
 from streamlit_app.components.common import page_header, unavailable
 from streamlit_app.config import DashboardPaths
 from streamlit_app.services.prediction import (
@@ -73,12 +74,15 @@ def render(paths: DashboardPaths) -> None:
         return
 
     st.success(f"Assigned to cluster {result.cluster}")
-    columns = st.columns(4)
-    columns[0].metric("Predicted cluster", str(result.cluster))
-    columns[1].metric("Cluster size", f"{result.cluster_size:,}")
     _, _, _, trained_at = get_registry().get_bundle()
-    columns[2].metric("Model", "PCA-2 + KMeans-2")
-    columns[3].metric("Model timestamp", str(trained_at or "—"))
+    render_kpis(
+        [
+            ("Predicted cluster", str(result.cluster), None),
+            ("Cluster size", f"{result.cluster_size:,}", None),
+            ("Model", "PCA-2 + KMeans-2", None),
+            ("Model timestamp", str(trained_at or "—"), None),
+        ]
+    )
     st.subheader("Cluster profile")
     st.dataframe(
         pd.DataFrame([result.cluster_profile]),

@@ -5,6 +5,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from streamlit_app.components.cards import render_kpis
 from streamlit_app.components.charts import cluster_bar, scatter_chart
 from streamlit_app.components.common import page_header, section_title, unavailable
 from streamlit_app.config import DashboardPaths
@@ -37,9 +38,16 @@ def render(paths: DashboardPaths) -> None:
         assignments, transformed = predict_feature_table(features)
     cluster_sizes = assignments["cluster"].value_counts().sort_index().rename_axis("cluster").reset_index(name="cluster_size")
     cluster_sizes["percentage"] = cluster_sizes["cluster_size"] / len(assignments)
-    render_kpis = st.columns(len(cluster_sizes))
-    for column, row in zip(render_kpis, cluster_sizes.itertuples()):
-        column.metric(f"Cluster {row.cluster}", f"{row.cluster_size:,.0f}", f"{row.percentage:.1%} of customers")
+    render_kpis(
+        [
+            (
+                f"Cluster {row.cluster}",
+                f"{row.cluster_size:,.0f}",
+                f"{row.percentage:.1%} of customers",
+            )
+            for row in cluster_sizes.itertuples()
+        ]
+    )
 
     left, right = st.columns([1, 1.25])
     with left:
@@ -63,8 +71,12 @@ def render(paths: DashboardPaths) -> None:
     left, right = st.columns(2)
     with left:
         st.markdown(f"<div class='cluster-chip' style='--chip-color:{cluster_color(selected_cluster)}'>Cluster {selected_cluster}</div>", unsafe_allow_html=True)
-        st.metric("Customer ID", selected_id)
-        st.metric("Assigned cluster", str(selected_cluster))
+        render_kpis(
+            [
+                ("Customer ID", selected_id, None),
+                ("Assigned cluster", str(selected_cluster), None),
+            ]
+        )
         st.dataframe(selected.astype(str).to_frame("value"), width="stretch")
     with right:
         cluster_profile = profile[profile["cluster"].round().astype(int) == selected_cluster]

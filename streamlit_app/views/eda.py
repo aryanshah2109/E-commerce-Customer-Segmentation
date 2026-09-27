@@ -6,6 +6,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
+from streamlit_app.components.cards import render_kpis as render_metric_cards
 from streamlit_app.components.charts import heatmap, line_chart
 from streamlit_app.components.common import page_header, section_title, unavailable
 from streamlit_app.config import DashboardPaths
@@ -28,15 +29,13 @@ def render(paths: DashboardPaths) -> None:
         return
 
     overview = report.get("overview", {})
-    render_kpis = st.columns(4)
     values = [
         ("Rows", number(overview.get("shape", [0, 0])[0])),
         ("Columns", number(overview.get("shape", [0, 0])[1])),
         ("Duplicate rows", number(overview.get("duplicate_rows"))),
         ("Date range", f"{str(overview.get('date_min', '—'))[:10]} → {str(overview.get('date_max', '—'))[:10]}"),
     ]
-    for column, (label, value) in zip(render_kpis, values):
-        column.metric(label, value)
+    render_metric_cards([(label, value, None) for label, value in values])
 
     tabs = st.tabs(["Data quality", "Distributions", "Relationships", "Operations"])
     with tabs[0]:
@@ -82,7 +81,9 @@ def render(paths: DashboardPaths) -> None:
         sales = load_optional_csv(paths.sales_features, ("Order_Date",))
         zero = report.get("zero_transaction_analysis", {})
         section_title("Zero-transaction days")
-        st.metric("Days with no observed transactions", number(zero.get("count")))
+        render_metric_cards(
+            [("Days with no observed transactions", number(zero.get("count")), None)]
+        )
         st.caption("The feature pipeline keeps these calendar dates and marks them with `is_gap_day` rather than dropping them.")
         if sales is not None:
             st.plotly_chart(line_chart(sales, "Order_Date", "total_sales", "Daily net sales", "Net sales (USD)"), width="stretch")

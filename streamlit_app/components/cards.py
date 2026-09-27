@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from html import escape
+
 import streamlit as st
 
 
@@ -10,7 +12,20 @@ def render_kpis(items: list[tuple[str, str, str | None]]) -> None:
     columns = st.columns(len(items))
     for column, (label, value, delta) in zip(columns, items):
         with column:
-            st.metric(label, value, delta=delta)
+            tooltip = escape(f"{label}: {value}")
+            delta_markup = (
+                f'<div class="metric-card-delta" title="{escape(delta)}">'
+                f"{escape(delta)}</div>"
+                if delta
+                else ""
+            )
+            st.markdown(
+                f'<div class="metric-card" title="{tooltip}">'
+                f'<div class="metric-card-label">{escape(label)}</div>'
+                f'<div class="metric-card-value">{escape(value)}</div>'
+                f"{delta_markup}</div>",
+                unsafe_allow_html=True,
+            )
 
 
 def render_status(
