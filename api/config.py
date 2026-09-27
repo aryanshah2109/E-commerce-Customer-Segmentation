@@ -34,6 +34,7 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     cors_allow_origins: list[str] = Field(default_factory=lambda: ["*"])
     pipeline_timeout_seconds: float = Field(default=3600.0, gt=0)
+    enable_pipeline: bool = True
 
 
 @lru_cache(maxsize=1)

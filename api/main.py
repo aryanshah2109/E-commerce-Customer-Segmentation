@@ -47,7 +47,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     app.include_router(health.router, prefix="/api/v1")
     app.include_router(prediction.router, prefix="/api/v1")
-    app.include_router(pipeline.router, prefix="/api/v1")
+    if resolved_settings.enable_pipeline:
+        app.include_router(pipeline.router, prefix="/api/v1")
     return app
 
 
