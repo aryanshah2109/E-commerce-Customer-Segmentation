@@ -16,8 +16,9 @@ PAGES = [
 ]
 
 
-def render_sidebar(model_loaded: bool) -> str:
+def render_sidebar(model_loaded: bool, pipeline_available: bool = True) -> str:
     """Render navigation and return the selected page."""
+    pages = [page for page in PAGES if pipeline_available or page != "Pipeline"]
     with st.sidebar:
         st.markdown(
             '<div class="brand"><div class="brand-mark">CS</div>'
@@ -26,7 +27,7 @@ def render_sidebar(model_loaded: bool) -> str:
             unsafe_allow_html=True,
         )
         st.markdown("<div class='sidebar-label'>Workspace</div>", unsafe_allow_html=True)
-        selected = st.radio("Navigate", PAGES, label_visibility="collapsed")
+        selected = st.radio("Navigate", pages, label_visibility="collapsed")
         st.divider()
         status = "Model ready" if model_loaded else "Model unavailable"
         tone = "positive" if model_loaded else "warning"

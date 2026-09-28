@@ -6,18 +6,29 @@ import streamlit as st
 
 from streamlit_app.components.cards import render_kpis
 from streamlit_app.components.common import page_header, section_title
-from streamlit_app.config import DashboardPaths
+from streamlit_app.config import DashboardPaths, pipeline_enabled
 from streamlit_app.services.pipeline import run_full_pipeline
 from streamlit_app.utils.helpers import number
+from api.config import Settings
 
 
 def render(paths: DashboardPaths) -> None:
     """Render manual pipeline controls and latest run status."""
+    if not pipeline_enabled():
+        st.warning("Pipeline execution is disabled in the deployed dashboard.")
+        return
     page_header(
         "OPERATIONS",
         "Pipeline control",
         "Manually run the existing batch workflow and refresh its generated artifacts. The dashboard never retrains automatically.",
     )
+    if not Settings().enable_pipeline:
+        st.info(
+            "Pipeline execution is disabled in this deployment. "
+            "Run the pipeline locally to regenerate artifacts.",
+            icon="ℹ️",
+        )
+        return
     section_title("Full pipeline", "Validation → EDA → preprocessing → features → splits → segmentation → evaluation → promotion")
     st.markdown("<div class='pipeline-strip'><span>Data preparation</span><b>→</b><span>EDA</span><b>→</b><span>Preprocessing</span><b>→</b><span>Features</span><b>→</b><span>Splits</span><b>→</b><span>Promotion</span></div>", unsafe_allow_html=True)
     st.warning("This operation can take several minutes and rewrites generated artifacts. Start it only when a retraining run is intended.")
@@ -48,3 +59,4 @@ def render(paths: DashboardPaths) -> None:
     else:
         st.error(f"Pipeline failed: {result.get('failed_stage', 'unknown stage')}")
         st.caption(f"Log: {result.get('log_path', '—')}")
+

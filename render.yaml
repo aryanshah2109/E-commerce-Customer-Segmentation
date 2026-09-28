@@ -34,5 +34,7 @@ services:
         value: "true"
       - key: STREAMLIT_SERVER_FILE_WATCHER_TYPE
         value: none
+      - key: APP_ENABLE_PIPELINE
+        value: "false"
       - key: PYTHON_VERSION
         value: "3.14.0"

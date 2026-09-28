@@ -2,12 +2,19 @@
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
 from customer_sales_analytics.config.io import load_yaml
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+
+def pipeline_enabled() -> bool:
+    """Return whether manual pipeline execution is enabled for this app."""
+    value = os.getenv("APP_ENABLE_PIPELINE", "true").strip().lower()
+    return value not in {"0", "false", "no", "off"}
 
 
 @dataclass(frozen=True)

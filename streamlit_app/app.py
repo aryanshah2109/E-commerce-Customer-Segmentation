@@ -9,11 +9,12 @@ import plotly.io as pio
 import streamlit as st
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
+for path in (PROJECT_ROOT, PROJECT_ROOT / "src"):
+    if str(path) not in sys.path:
+        sys.path.insert(0, str(path))
 
 from streamlit_app.components.sidebar import render_sidebar
-from streamlit_app.config import get_paths
+from streamlit_app.config import get_paths, pipeline_enabled
 from streamlit_app.services.prediction import model_available
 from streamlit_app.views import (
     about,
@@ -52,7 +53,8 @@ def main() -> None:
         st.error(f"Dashboard configuration is unavailable: {error}")
         return
 
-    selected_page = render_sidebar(model_available())
+    enable_pipeline = pipeline_enabled()
+    selected_page = render_sidebar(model_available(), enable_pipeline)
     views = {
         "Overview": overview.render,
         "EDA": eda.render,
@@ -60,9 +62,10 @@ def main() -> None:
         "Customer Segmentation": segmentation.render,
         "Model Performance": model.render,
         "Predict Customer": prediction.render,
-        "Pipeline": pipeline.render,
         "About": about.render,
     }
+    if enable_pipeline:
+        views["Pipeline"] = pipeline.render
     try:
         views[selected_page](paths)
     except (

@@ -1,4 +1,4 @@
-# Python-generated files
+# Python
 __pycache__/
 *.py[oc]
 build/
@@ -6,38 +6,35 @@ dist/
 wheels/
 *.egg-info
 
-# Virtual environments and local tooling
+# Local tooling and environments
 .venv/
-.docx/
 .mypy_cache/
 .ruff_cache/
 .pytest_cache/
+.docx/
+.docx_packages/
+docs/
 
-# Local runtime files
+# Secrets and runtime files
+.env
+.streamlit/secrets.toml
 logs/
 *.log
 
-# Environment files
-.env
+# Data: keep only the feature tables the dashboard reads.
+# raw.csv, interim data and splits are regenerable and stay out of Git.
+/data/*
+!/data/processed/
+/data/processed/*
+!/data/processed/customer_features/
+!/data/processed/sales_features/
 
-# Raw/generated data stays out of Git because it can be large.
-data/
+# Models: keep only the promoted inference bundle
+/models/*
+!/models/segmentation/
+/models/segmentation/*
+!/models/segmentation/best_model/
 
-# Keep the promoted inference bundle in Git for API deployment.
-# Candidate models remain ignored; only the production bundle is versioned.
-models/*
-!models/segmentation/
-models/segmentation/*
-!models/segmentation/best_model/
-!models/segmentation/best_model/**
-
-# Reports and artifacts are intentionally not ignored because the API and
-# dashboard read the generated deployment reports from this directory.
-
-# Source package named data is code, not generated data
-!src/customer_sales_analytics/data/
-!src/customer_sales_analytics/data/**/*.py
-
-# docx and packages
-.docx_packages/
-docs/
+# Artifacts: keep only the JSON/CSV reports the API and dashboard read
+/artifacts/*
+!/artifacts/reports/
